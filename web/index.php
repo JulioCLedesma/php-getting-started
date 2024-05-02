@@ -123,5 +123,24 @@ $app->post('/add', function(Request $request, Response $response, LoggerInterfac
   // Procesar la adición del registro
 });
 
+// Ruta para mostrar el formulario de agregar un nuevo registro
+$app->get('/add', function(Request $request, Response $response, Twig $twig) {
+  return $twig->render($response, 'add.twig');
+});
+
+// Ruta para procesar el formulario de agregar un nuevo registro
+$app->post('/add', function(Request $request, Response $response, PDO $pdo) {
+  // Obtener los datos del formulario
+  $name = $request->getParsedBody()['name']; // Suponiendo que el formulario tiene un campo llamado "name"
+
+  // Validar los datos si es necesario
+
+  // Insertar el nuevo registro en la base de datos
+  $stmt = $pdo->prepare('INSERT INTO your_table (name) VALUES (:name)');
+  $stmt->execute(['name' => $name]);
+
+  // Redirigir a la página principal u otra página según sea necesario
+  return $response->withHeader('Location', '/');
+});
 
 $app->run();
