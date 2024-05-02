@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Editar Registro</h1>
+<form action="/edit/{{ item.id }}" method="post">
+  <label for="name">Nombre:</label><br>
+  <input type="text" id="name" name="name" value="{{ item.name }}"><br><br>
+  <input type="submit" value="Guardar Cambios">
+</form>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Eliminar Registro</h1>
+<p>¿Estás seguro de que quieres eliminar este registro?</p>
+<p><strong>ID:</strong> {{ item.id }}</p>
+<p><strong>Nombre:</strong> {{ item.name }}</p>
+<form action="/delete/{{ item.id }}" method="post">
+  <input type="submit" value="Confirmar Eliminación">
+</form>
+<a href="/view/{{ item.id }}">Cancelar</a>
+{% endblock %}

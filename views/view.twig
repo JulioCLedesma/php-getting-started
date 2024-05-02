@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Detalle del Registro</h1>
+<p><strong>ID:</strong> {{ item.id }}</p>
+<p><strong>Nombre:</strong> {{ item.name }}</p>
+<p><a href="/edit/{{ item.id }}">Editar</a> | <a href="/delete/{{ item.id }}">Eliminar</a></p>
+<a href="/">Volver a la lista</a>
+{% endblock %}

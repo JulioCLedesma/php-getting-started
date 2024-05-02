@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Lista de Registros</h1>
+<ul>
+{% for item in items %}
+  <li><a href="/view/{{ item.id }}">{{ item.name }}</a></li>
+{% else %}
+  <li>No hay registros disponibles.</li>
+{% endfor %}
+</ul>
+<a href="/add">Agregar Registro</a>
+{% endblock %}
