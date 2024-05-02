@@ -38,7 +38,8 @@ $app->get('/', function(Request $request, Response $response, LoggerInterface $l
 
 // Add Cowsay to Container
 $container->set(\Cowsayphp\AnimalInterface::class, function() {
-  return \Cowsayphp\Farm::create(\Cowsayphp\Farm\Cow::class);
+  $class = '\\Cowsayphp\\Farm\\'.(getenv("COWSAY_FARM_CLASS")?:'Cow');
+  return \Cowsayphp\Farm::create($class);
 });
 
 $app->get('/coolbeans', function(Request $request, Response $response, LoggerInterface $logger, \Cowsayphp\AnimalInterface $animal) {
