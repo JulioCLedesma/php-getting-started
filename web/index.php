@@ -66,6 +66,18 @@ $app->get('/db', function(Request $request, Response $response, LoggerInterface 
   });
 
   
+  // Agregar nuevo registro
+  $app->post('/add', function(Request $request, Response $response, PDO $pdo) {
+    // Retrieve data from the form
+    $name = $request->getParsedBody()['name'];
+    
+    // Insert the new record into the database
+    $stmt = $pdo->prepare("INSERT INTO test_table (name) VALUES (:name)");
+    $stmt->execute(['name' => $name]);
+  
+    // Redirect back to the database page
+    return $response->withHeader('Location', '/db');
+  });
 
 
 $app->run();
