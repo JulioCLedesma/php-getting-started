@@ -51,6 +51,21 @@ $container->set(PDO::class, function() {
     ));
 });
 
+
+$app->get('/db', function(Request $request, Response $response, LoggerInterface $logger, Twig $twig, PDO $pdo) {
+    $st = $pdo->prepare('SELECT name FROM test_table');
+    $st->execute();
+    $names = array();
+    while($row = $st->fetch(PDO::FETCH_ASSOC)) {
+      $logger->debug('Row ' . $row['name']);
+      $names[] = $row;
+    }
+    return $twig->render($response, 'database.twig', [
+      'names' => $names,
+    ]);
+  });
+
+  
 // Mostrar todos los registros
 $app->get('/list', function(Request $request, Response $response, LoggerInterface $logger, Twig $twig, PDO $pdo) {
     $stmt = $pdo->query('SELECT * FROM your_table');
@@ -96,11 +111,9 @@ $app->get('/add', function(Request $request, Response $response, LoggerInterface
 });
 
 $app->post('/add', function(Request $request, Response $response, LoggerInterface $logger, PDO $pdo) {
-    // Procesar la adición del registro
-    // Obtener los datos del formulario
+
     $name = $request->getParsedBody()['name']; // Suponiendo que el formulario tiene un campo llamado "name"
 
-    // Validar los datos si es necesario
 
     // Insertar el nuevo registro en la base de datos
     $stmt = $pdo->prepare('INSERT INTO your_table (name) VALUES (:name)');
