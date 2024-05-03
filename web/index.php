@@ -68,16 +68,37 @@ $app->get('/db', function(Request $request, Response $response, LoggerInterface 
   
   // Agregar nuevo registro
   $app->post('/add', function(Request $request, Response $response, PDO $pdo) {
-    // Retrieve data from the form
+
+       //Actualizar BD
     $name = $request->getParsedBody()['name'];
-    
-    // Insert the new record into the database
     $stmt = $pdo->prepare("INSERT INTO test_table (name) VALUES (:name)");
     $stmt->execute(['name' => $name]);
+//    return $response->withHeader('Location', '/db');
+  });
+
+
+
+// Editar registro
+$app->post('/edit/{id}', function(Request $request, Response $response, $args, PDO $pdo) {
+    $id = $args['id'];
+
+    //Actualizar BD
+    $name = $request->getParsedBody()['name'];
+    $stmt = $pdo->prepare("UPDATE test_table SET name = :name WHERE id = :id");
+    $stmt->execute(['id' => $id, 'name' => $name]);
+    return $response->withHeader('Location', '/db');
+  });
+  
+  // Eliminar registro ruta
+  $app->post('/delete/{id}', function(Request $request, Response $response, $args, PDO $pdo) {
+    $id = $args['id'];
+    
+       //Actualizar BD
+    $stmt = $pdo->prepare("DELETE FROM test_table WHERE id = :id");
+    $stmt->execute(['id' => $id]);
   
     // Redirect back to the database page
     return $response->withHeader('Location', '/db');
   });
-
-
+  
 $app->run();
