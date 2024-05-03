@@ -42,7 +42,7 @@ $app->get('/', function(Request $request, Response $response, LoggerInterface $l
     return $twig->render($response, 'index.twig');
 });
 
-// Add Database connection to Container
+// Conexion a la base de datos
 $container->set(PDO::class, function() {
     $dburl = parse_url(getenv('DATABASE_URL') ?: throw new Exception('no DATABASE_URL'));
     return new PDO(sprintf(
