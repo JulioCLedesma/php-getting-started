@@ -51,6 +51,18 @@ $container->set(PDO::class, function() {
     ));
 });
 
+$app->get('/db', function(Request $request, Response $response, LoggerInterface $logger, Twig $twig, PDO $pdo) {
+  $st = $pdo->prepare('SELECT name FROM test_table');
+  $st->execute();
+  $names = array();
+  while($row = $st->fetch(PDO::FETCH_ASSOC)) {
+    $logger->debug('Row ' . $row['name']);
+    $names[] = $row;
+  }
+  return $twig->render($response, 'database.twig', [
+    'names' => $names,
+  ]);
+});
 
 // Route for adding a new record
 $app->post('/add', function(Request $request, Response $response, PDO $pdo) {
@@ -92,10 +104,5 @@ $app->post('/delete/{id}', function(Request $request, Response $response, $args,
   return $response->withHeader('Location', '/db');
 });
 
-
-$app->get('/db', function (Request $request, Response $response) {
-  // Aquí va la lógica para manejar la solicitud
-  return $response->write('Hello from /db');
-});
 
 $app->run();
