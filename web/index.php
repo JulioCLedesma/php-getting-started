@@ -91,4 +91,11 @@ $app->post('/delete/{id}', function(Request $request, Response $response, $args,
   // Redirect back to the database page
   return $response->withHeader('Location', '/db');
 });
+
+
+$app->get('/db', function (Request $request, Response $response) {
+  // Aquí va la lógica para manejar la solicitud
+  return $response->write('Hello from /db');
+});
+
 $app->run();
