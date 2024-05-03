@@ -52,75 +52,43 @@ $container->set(PDO::class, function() {
 });
 
 
-$app->get('/db', function(Request $request, Response $response, LoggerInterface $logger, Twig $twig, PDO $pdo) {
-    $st = $pdo->prepare('SELECT name FROM test_table');
-    $st->execute();
-    $names = array();
-    while($row = $st->fetch(PDO::FETCH_ASSOC)) {
-      $logger->debug('Row ' . $row['name']);
-      $names[] = $row;
-    }
-    return $twig->render($response, 'database.twig', [
-      'names' => $names,
-    ]);
-  });
-
+// Route for adding a new record
+$app->post('/add', function(Request $request, Response $response, PDO $pdo) {
+  // Retrieve data from the form
+  $name = $request->getParsedBody()['name'];
   
-// Mostrar todos los registros
-$app->get('/list', function(Request $request, Response $response, LoggerInterface $logger, Twig $twig, PDO $pdo) {
-    $stmt = $pdo->query('SELECT * FROM your_table');
-    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    return $twig->render($response, 'list.twig', ['items' => $items]);
+  // Insert the new record into the database
+  $stmt = $pdo->prepare("INSERT INTO test_table (name) VALUES (:name)");
+  $stmt->execute(['name' => $name]);
+
+  // Redirect back to the database page
+  return $response->withHeader('Location', '/db');
 });
 
-// Mostrar un registro individual
-$app->get('/view/{id}', function(Request $request, Response $response, LoggerInterface $logger, Twig $twig, PDO $pdo, $args) {
-    $stmt = $pdo->prepare('SELECT * FROM your_table WHERE id = :id');
-    $stmt->execute(['id' => $args['id']]);
-    $item = $stmt->fetch(PDO::FETCH_ASSOC);
-    return $twig->render($response, 'view.twig', ['item' => $item]);
+// Route for editing a record
+$app->post('/edit/{id}', function(Request $request, Response $response, $args, PDO $pdo) {
+  // Retrieve data from the form
+  $id = $args['id'];
+  $name = $request->getParsedBody()['name'];
+  
+  // Update the record in the database
+  $stmt = $pdo->prepare("UPDATE test_table SET name = :name WHERE id = :id");
+  $stmt->execute(['id' => $id, 'name' => $name]);
+
+  // Redirect back to the database page
+  return $response->withHeader('Location', '/db');
 });
 
-// Editar un registro
-$app->get('/edit/{id}', function(Request $request, Response $response, LoggerInterface $logger, Twig $twig, PDO $pdo, $args) {
-    $stmt = $pdo->prepare('SELECT * FROM your_table WHERE id = :id');
-    $stmt->execute(['id' => $args['id']]);
-    $item = $stmt->fetch(PDO::FETCH_ASSOC);
-    return $twig->render($response, 'edit.twig', ['item' => $item]);
+// Route for deleting a record
+$app->post('/delete/{id}', function(Request $request, Response $response, $args, PDO $pdo) {
+  // Retrieve the ID of the record to delete
+  $id = $args['id'];
+  
+  // Delete the record from the database
+  $stmt = $pdo->prepare("DELETE FROM test_table WHERE id = :id");
+  $stmt->execute(['id' => $id]);
+
+  // Redirect back to the database page
+  return $response->withHeader('Location', '/db');
 });
-
-$app->post('/edit/{id}', function(Request $request, Response $response, LoggerInterface $logger, PDO $pdo, $args) {
-    // Procesar la edición del registro
-});
-
-// Eliminar un registro
-$app->get('/delete/{id}', function(Request $request, Response $response, LoggerInterface $logger, Twig $twig, PDO $pdo, $args) {
-    $stmt = $pdo->prepare('SELECT * FROM your_table WHERE id = :id');
-    $stmt->execute(['id' => $args['id']]);
-    $item = $stmt->fetch(PDO::FETCH_ASSOC);
-    return $twig->render($response, 'delete.twig', ['item' => $item]);
-});
-
-$app->post('/delete/{id}', function(Request $request, Response $response, LoggerInterface $logger, PDO $pdo, $args) {
-    // Procesar la eliminación del registro
-});
-
-// Agregar un registro
-$app->get('/add', function(Request $request, Response $response, LoggerInterface $logger, Twig $twig) {
-    return $twig->render($response, 'add.twig');
-});
-
-$app->post('/add', function(Request $request, Response $response, LoggerInterface $logger, PDO $pdo) {
-
-    $name = $request->getParsedBody()['name']; // Suponiendo que el formulario tiene un campo llamado "name"
-
-
-    // Insertar el nuevo registro en la base de datos
-    $stmt = $pdo->prepare('INSERT INTO your_table (name) VALUES (:name)');
-    $stmt->execute(['name' => $name]);
-
-    // Redirigir a la página principal u otra página según sea necesario
-    return $response->withHeader('Location', '/');
-});
-
 $app->run();

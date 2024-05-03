@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<p>Got these rows from the database:</p>
+<p>Lista de items</p>
 
 <ul>
 {% for n in names %}
-  <li> {{ n.name }} </li>
+  <li>{{ n.name }} <a href="/edit/{{ n.id }}">Editar</a> | <a href="/delete/{{ n.id }}">Eliminar</a> | <a href="/view/{{ n.id }}" class="btn btn-info">Ver</a></li>
 {% else %}
   <li><em>No entries yet!</em></li>
 {% endfor %}
