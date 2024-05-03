@@ -13,6 +13,10 @@ use Slim\Views\Twig;
 
 require(__DIR__.'/../vendor/autoload.php');
 
+
+// Instancia de la aplicación Slim
+$app = AppFactory::create();
+
 // Create DI container
 $container = new Container();
 
