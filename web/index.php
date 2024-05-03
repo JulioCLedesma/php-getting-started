@@ -73,7 +73,7 @@ $app->get('/db', function(Request $request, Response $response, LoggerInterface 
     $name = $request->getParsedBody()['name'];
     $stmt = $pdo->prepare("INSERT INTO test_table (name) VALUES (:name)");
     $stmt->execute(['name' => $name]);
-//    return $response->withHeader('Location', '/db');
+    return $response->withHeader('Location', '/db');
   });
 
 
