@@ -51,6 +51,8 @@ $container->set(PDO::class, function() {
     ));
 });
 
+
+//ruta para ver base de datos
 $app->get('/db', function(Request $request, Response $response, LoggerInterface $logger, Twig $twig, PDO $pdo) {
   $st = $pdo->prepare('SELECT name FROM test_table');
   $st->execute();
